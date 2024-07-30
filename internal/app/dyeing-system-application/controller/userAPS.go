@@ -1,0 +1,53 @@
+package controller
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"wk.com/dyeing-system-application/internal/app/dyeing-system-application/common"
+	"wk.com/dyeing-system-application/internal/app/dyeing-system-application/domain/model"
+	"wk.com/dyeing-system-application/internal/app/dyeing-system-application/domain/service"
+	"wk.com/dyeing-system-application/internal/app/dyeing-system-application/util"
+)
+
+type UserService struct {
+	iUserRepo service.IUserService
+}
+
+func NewUserService(iUserRepo service.IUserService) *UserService {
+	return &UserService{
+		iUserRepo: iUserRepo,
+	}
+}
+
+func (s *UserService) UserLogin(c *gin.Context) {
+	//初始化日志对象
+	log := util.NewSugarLogZap()
+	//初始化入参
+	userDTO := model.GetUserDTO(c, log)
+	//生成唯一ID
+	userDTO.Channel.SerialNum = uuid.New().String()
+	//将入参转为JSON
+	tmperr := util.RequestSugarPrintInfo(log, userDTO.Channel, userDTO)
+	if tmperr != nil {
+		util.ResponseSugarPrintInfo(log, userDTO.Channel, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		return
+	}
+	//用户登录
+	user, err := s.iUserRepo.QueryUser(&userDTO.User)
+	if err != nil {
+		util.ResponseSugarPrintInfo(log, userDTO.Channel, common.CreateFailResponse(util.RecordNotFound, "用户登录异常", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, "用户登录异常", err.Error()))
+		return
+	}
+	//将出参转为JSON
+	tmperr = util.ResponseSugarPrintInfo(log, userDTO.Channel, common.CreateSuccessResponse(user))
+	if tmperr != nil {
+		util.ResponseSugarPrintInfo(log, userDTO.Channel, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, common.CreateSuccessResponse(user))
+}
