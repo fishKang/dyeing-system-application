@@ -16,6 +16,7 @@ import (
 
 type Repositories struct {
 	User service.IUserRepository
+	Dye  service.IDyeRepository
 	db   *gorm.DB
 }
 
@@ -47,6 +48,7 @@ func NewRepositories(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string
 	sqlDB.SetConnMaxLifetime(time.Hour)
 	return &Repositories{
 		User: repository.NewUserRepo(db),
+		Dye:  repository.NewDyeRepo(db),
 		db:   db,
 	}, nil
 }
@@ -75,5 +77,5 @@ func (s *Repositories) Close() error {
 
 // This migrate all tables
 func (s *Repositories) Automigrate() error {
-	return s.db.AutoMigrate(&entity.User{})
+	return s.db.AutoMigrate(&entity.User{}, &entity.Dye{})
 }
