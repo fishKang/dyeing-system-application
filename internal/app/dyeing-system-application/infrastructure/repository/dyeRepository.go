@@ -33,11 +33,22 @@ func (*DyeRepo) DeleteDye(reqDye *entity.Dye) (int64, error) {
 func (r *DyeRepo) QueryDye(reqDye *entity.Dye) (*[]entity.Dye, error) {
 	var dye []entity.Dye
 	// err := r.db.Debug().Take(&Dye).Error
-	result := r.db.Find(&dye)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nil, result.Error
+	if reqDye.Name == "" && reqDye.Company == "" && reqDye.Address == "" && reqDye.Phone == "" && reqDye.Status == 0 {
+		result := r.db.Find(&dye)
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, result.Error
+		}
+	} else {
+		// result := r.db.Find(&dye)
+		status := 1
+		if reqDye.Status == 0 {
+			status = 1
+		}
+		result := r.db.Where("name LIKE ? and company like ? and address like ? and phone like ? and Status = ?", "%"+reqDye.Name+"%", "%"+reqDye.Company+"%", "%"+reqDye.Address+"%", "%"+reqDye.Phone+"%", status).Find(&dye)
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, result.Error
+		}
 	}
-
 	return &dye, nil
 }
 
