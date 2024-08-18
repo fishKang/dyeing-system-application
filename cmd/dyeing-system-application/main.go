@@ -19,8 +19,10 @@ func main() {
 	services.Automigrate()
 
 	user := controller.NewUserService(services.User)
+	dye := controller.NewDyeService(services.Dye)
 	r := gin.Default()
 	r.POST("/userLogin", user.UserLogin)
+	r.POST("/queryDyeList", dye.QueryDyeList)
 	r.Run(":8080")
 }
 
