@@ -23,6 +23,7 @@ func main() {
 	r := gin.Default()
 	r.POST("/userLogin", user.UserLogin)
 	r.POST("/queryDyeList", dye.QueryDyeList)
+	r.POST("/updateDyeDetail", dye.UpdateDyeDetail)
 	r.Run(":8080")
 }
 

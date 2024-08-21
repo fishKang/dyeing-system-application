@@ -53,3 +53,36 @@ func (s *DyeService) QueryDyeList(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, common.CreateSuccessResponse(dye))
 }
+
+func (s *DyeService) UpdateDyeDetail(c *gin.Context) {
+	//初始化日志对象
+	log := util.NewSugarLogZap()
+	//初始化入参
+	dyeDTO := model.GetDyeDTO(c, log)
+	//生成唯一ID
+	dyeDTO.Channel.SerialNum = uuid.New().String()
+	//将入参转为JSON
+	tmperr := util.RequestSugarPrintInfo(log, dyeDTO.Channel, dyeDTO)
+	if tmperr != nil {
+		util.ResponseSugarPrintInfo(log, dyeDTO.Channel, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		return
+	}
+	//更新染料明细
+	count, err := s.iDyeRepo.UpdateDye(&dyeDTO.Dye)
+	if err != nil || count != 1 {
+		util.ResponseSugarPrintInfo(log, dyeDTO.Channel, common.CreateFailResponse(util.RecordNotFound, "更新染料明细异常", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, "更新染料明细异常", err.Error()))
+		return
+	}
+
+	// outputDye := []entity.Dye{}
+	//将出参转为JSON
+	tmperr = util.ResponseSugarPrintInfo(log, dyeDTO.Channel, common.CreateSuccessResponse(dyeDTO.Dye))
+	if tmperr != nil {
+		util.ResponseSugarPrintInfo(log, dyeDTO.Channel, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, common.CreateSuccessResponse(dyeDTO.Dye))
+}

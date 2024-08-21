@@ -53,6 +53,7 @@ func (r *DyeRepo) QueryDye(reqDye *entity.Dye) (*[]entity.Dye, error) {
 }
 
 // UpdateDye implements domain.IDyeRepository.
-func (*DyeRepo) UpdateDye(Dye *entity.Dye) (int64, error) {
-	panic("unimplemented")
+func (r *DyeRepo) UpdateDye(reqDye *entity.Dye) (int64, error) {
+	result := r.db.Model(&reqDye).Where("Name = ?", reqDye.Name).Updates(map[string]interface{}{"company": reqDye.Company, "address": reqDye.Address, "phone": reqDye.Phone, "total_amount": gorm.Expr("total_amount + ?", reqDye.TotalAmount)})
+	return result.RowsAffected, result.Error
 }
