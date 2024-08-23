@@ -11,7 +11,7 @@ import (
 )
 
 type DyeDTO struct {
-	entity.Dye     `json:"dye"`
+	entity.Dye     `json:"data"`
 	entity.Channel `json:"channel"`
 }
 

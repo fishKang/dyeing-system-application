@@ -11,7 +11,7 @@ import (
 )
 
 type UserDTO struct {
-	entity.User    `json:"user"`
+	entity.User    `json:"data"`
 	entity.Channel `json:"channel"`
 }
 
