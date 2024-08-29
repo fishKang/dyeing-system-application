@@ -7,6 +7,8 @@ const (
 
 	RecordNotFound        = "1001" // 未找到记录
 	ParamConvertFailed    = "1002" // 参数转换失败
+	InsertFailed          = "1003" // 插入失败
+	UpdateFailed          = "1004" // 插入失败
 	StatusNoContent       = 204    // RFC 9110, 15.3.5
 	StatusResetContent    = 205    // RFC 9110, 15.3.6
 	StatusPartialContent  = 206    // RFC 9110, 15.3.7

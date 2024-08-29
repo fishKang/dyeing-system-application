@@ -18,12 +18,13 @@ func main() {
 	defer services.Close()
 	services.Automigrate()
 
-	user := controller.NewUserService(services.User)
-	dye := controller.NewDyeService(services.Dye)
+	user := controller.NewUserService(services.User, services.Channel)
+	dye := controller.NewDyeService(services.Dye, services.Channel)
 	r := gin.Default()
 	r.POST("/userLogin", user.UserLogin)
 	r.POST("/queryDyeList", dye.QueryDyeList)
 	r.POST("/updateDyeDetail", dye.UpdateDyeDetail)
+	r.POST("/addDyeDetail", dye.AddDyeDetail)
 	r.Run(":8080")
 }
 

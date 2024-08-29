@@ -90,6 +90,7 @@ func RequestSugarPrintInfo(sugarLog *zap.SugaredLogger, eduChannel entity.Channe
 		return errors.New("参数转换失败")
 	}
 	sugarLog.Infof("%s %s.%s %s %s", eduChannel.SerialNum, eduChannel.Service, eduChannel.Method, eduChannel.Method+"入参：", jsonToMap)
+	eduChannel.Request = string(jsonToMap)
 	return nil
 }
 func ResponseSugarPrintInfo(sugarLog *zap.SugaredLogger, eduChannel entity.Channel, T any) error {
@@ -99,6 +100,7 @@ func ResponseSugarPrintInfo(sugarLog *zap.SugaredLogger, eduChannel entity.Chann
 		return errors.New("参数转换失败")
 	}
 	sugarLog.Infof("%s %s.%s %s %s", eduChannel.SerialNum, eduChannel.Service, eduChannel.Method, eduChannel.Method+"出参：", jsonToMap)
+	eduChannel.Response = string(jsonToMap)
 	return nil
 }
 
