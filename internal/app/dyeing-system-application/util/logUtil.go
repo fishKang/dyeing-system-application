@@ -83,7 +83,7 @@ func SugarPrintInfo(sugarLog *zap.SugaredLogger, eduChannel entity.Channel, T an
 	sugarLog.Infof("%s %s.%s %s", eduChannel.SerialNum, eduChannel.Service, eduChannel.Method, jsonToMap)
 	return nil
 }
-func RequestSugarPrintInfo(sugarLog *zap.SugaredLogger, eduChannel entity.Channel, T any) error {
+func RequestSugarPrintInfo(sugarLog *zap.SugaredLogger, eduChannel *entity.Channel, T any) error {
 	jsonToMap, err := json.Marshal(T)
 	if err != nil {
 		sugarLog.Infof("%s %s.%s %s", eduChannel.SerialNum, eduChannel.Service, eduChannel.Method, "参数转换失败")
@@ -93,13 +93,16 @@ func RequestSugarPrintInfo(sugarLog *zap.SugaredLogger, eduChannel entity.Channe
 	eduChannel.Request = string(jsonToMap)
 	return nil
 }
-func ResponseSugarPrintInfo(sugarLog *zap.SugaredLogger, eduChannel entity.Channel, T any) error {
+func ResponseSugarPrintInfo(sugarLog *zap.SugaredLogger, eduChannel *entity.Channel, T any) error {
 	jsonToMap, err := json.Marshal(T)
 	if err != nil {
 		sugarLog.Infof("%s %s.%s %s", eduChannel.SerialNum, eduChannel.Service, eduChannel.Method, "参数转换失败")
 		return errors.New("参数转换失败")
 	}
 	sugarLog.Infof("%s %s.%s %s %s", eduChannel.SerialNum, eduChannel.Service, eduChannel.Method, eduChannel.Method+"出参：", jsonToMap)
+	if len(jsonToMap) > 2000 {
+		jsonToMap = jsonToMap[:2000]
+	}
 	eduChannel.Response = string(jsonToMap)
 	return nil
 }

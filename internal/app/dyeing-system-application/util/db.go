@@ -79,5 +79,6 @@ func (s *Repositories) Close() error {
 
 // This migrate all tables
 func (s *Repositories) Automigrate() error {
+
 	return s.db.AutoMigrate(&entity.User{}, &entity.Dye{}, &entity.Channel{})
 }
