@@ -84,6 +84,13 @@ func (s *DyeService) UpdateDyeDetail(c *gin.Context) {
 		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
 		return
 	}
+	//登记请求信息到channel
+	channelCount, err := s.iChannelRepo.AddChannel(&dyeDTO.Channel)
+	if err != nil || channelCount != 1 {
+		util.ResponseSugarPrintInfo(log, &dyeDTO.Channel, common.CreateFailResponse(util.InsertFailed, "插入请求到channel失败", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.InsertFailed, "插入请求到channel失败", err.Error()))
+		return
+	}
 	//更新染料明细
 	count, err := s.iDyeRepo.UpdateDye(&dyeDTO.Dye)
 	if err != nil || count != 1 {
@@ -98,6 +105,13 @@ func (s *DyeService) UpdateDyeDetail(c *gin.Context) {
 	if tmperr != nil {
 		util.ResponseSugarPrintInfo(log, &dyeDTO.Channel, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
 		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		return
+	}
+	//更新返回信息到channel
+	returnCount, err := s.iChannelRepo.UpdateChannel(&dyeDTO.Channel)
+	if err != nil || returnCount != 1 {
+		util.ResponseSugarPrintInfo(log, &dyeDTO.Channel, common.CreateFailResponse(util.UpdateFailed, "更新返回到channel失败", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.UpdateFailed, "更新返回到channel失败", err.Error()))
 		return
 	}
 	c.JSON(http.StatusOK, common.CreateSuccessResponse(dyeDTO.Dye))
@@ -117,11 +131,18 @@ func (s *DyeService) AddDyeDetail(c *gin.Context) {
 		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
 		return
 	}
-	//更新染料明细
-	count, err := s.iDyeRepo.UpdateDye(&dyeDTO.Dye)
+	//登记请求信息到channel
+	channelCount, err := s.iChannelRepo.AddChannel(&dyeDTO.Channel)
+	if err != nil || channelCount != 1 {
+		util.ResponseSugarPrintInfo(log, &dyeDTO.Channel, common.CreateFailResponse(util.InsertFailed, "插入请求到channel失败", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.InsertFailed, "插入请求到channel失败", err.Error()))
+		return
+	}
+	//新增染料明细
+	count, err := s.iDyeRepo.AddDye(&dyeDTO.Dye)
 	if err != nil || count != 1 {
-		util.ResponseSugarPrintInfo(log, &dyeDTO.Channel, common.CreateFailResponse(util.RecordNotFound, "更新染料明细异常", err.Error()))
-		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, "更新染料明细异常", err.Error()))
+		util.ResponseSugarPrintInfo(log, &dyeDTO.Channel, common.CreateFailResponse(util.RecordNotFound, "新增染料明细异常", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, "新增染料明细异常", err.Error()))
 		return
 	}
 
@@ -131,6 +152,13 @@ func (s *DyeService) AddDyeDetail(c *gin.Context) {
 	if tmperr != nil {
 		util.ResponseSugarPrintInfo(log, &dyeDTO.Channel, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
 		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		return
+	}
+	//更新返回信息到channel
+	returnCount, err := s.iChannelRepo.UpdateChannel(&dyeDTO.Channel)
+	if err != nil || returnCount != 1 {
+		util.ResponseSugarPrintInfo(log, &dyeDTO.Channel, common.CreateFailResponse(util.UpdateFailed, "更新返回到channel失败", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.UpdateFailed, "更新返回到channel失败", err.Error()))
 		return
 	}
 	c.JSON(http.StatusOK, common.CreateSuccessResponse(dyeDTO.Dye))

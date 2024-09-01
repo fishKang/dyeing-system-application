@@ -20,8 +20,9 @@ func NewDyeRepo(db *gorm.DB) *DyeRepo {
 }
 
 // AddDye implements domain.IDyeRepository.
-func (*DyeRepo) AddDye(reqDye *entity.Dye) (int64, error) {
-	panic("unimplemented")
+func (r *DyeRepo) AddDye(reqDye *entity.Dye) (int64, error) {
+	result := r.db.Create(reqDye)
+	return result.RowsAffected, result.Error
 }
 
 // DeleteDye implements domain.IDyeRepository.
