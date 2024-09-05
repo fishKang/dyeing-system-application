@@ -20,11 +20,15 @@ func main() {
 
 	user := controller.NewUserService(services.User, services.Channel)
 	dye := controller.NewDyeService(services.Dye, services.Channel)
+	customer := controller.NewCustomerService(services.Customer, services.Channel)
 	r := gin.Default()
 	r.POST("/userLogin", user.UserLogin)
 	r.POST("/queryDyeList", dye.QueryDyeList)
 	r.POST("/updateDyeDetail", dye.UpdateDyeDetail)
 	r.POST("/addDyeDetail", dye.AddDyeDetail)
+	r.POST("/queryCustomerList", customer.QueryCustomerList)
+	r.POST("/updateCustomerDetail", customer.UpdateCustomerDetail)
+	r.POST("/addCustomerDetail", customer.AddCustomerDetail)
 	r.Run(":8080")
 }
 

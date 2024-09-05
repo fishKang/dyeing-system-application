@@ -15,10 +15,11 @@ import (
 )
 
 type Repositories struct {
-	User    service.IUserRepository
-	Dye     service.IDyeRepository
-	Channel service.IChannelRepository
-	db      *gorm.DB
+	User     service.IUserRepository
+	Dye      service.IDyeRepository
+	Customer service.ICustomerRepository
+	Channel  service.IChannelRepository
+	db       *gorm.DB
 }
 
 func NewRepositories(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) (*Repositories, error) {
@@ -48,10 +49,11 @@ func NewRepositories(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string
 	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
 	sqlDB.SetConnMaxLifetime(time.Hour)
 	return &Repositories{
-		User:    repository.NewUserRepo(db),
-		Dye:     repository.NewDyeRepo(db),
-		Channel: repository.NewChannelRepo(db),
-		db:      db,
+		User:     repository.NewUserRepo(db),
+		Dye:      repository.NewDyeRepo(db),
+		Customer: repository.NewCustomerRepo(db),
+		Channel:  repository.NewChannelRepo(db),
+		db:       db,
 	}, nil
 }
 func getLoggerConfig() logger.Interface {
@@ -80,5 +82,5 @@ func (s *Repositories) Close() error {
 // This migrate all tables
 func (s *Repositories) Automigrate() error {
 
-	return s.db.AutoMigrate(&entity.User{}, &entity.Dye{}, &entity.Channel{})
+	return s.db.AutoMigrate(&entity.User{}, &entity.Dye{}, &entity.Channel{}, &entity.Customer{})
 }
