@@ -1,0 +1,1 @@
+INSERT INTO `users`(`id`, `name`, `phone`, `email`, `address`, `password`, `created_at`, `updated_at`, `deleted_at`, `status`, `bak`) VALUES (1, 'wangkang', '1375001591', '707024922@qq.com', 'china', '123456', '2024-04-27 00:00:00.000', NULL, NULL, 1, NULL);
