@@ -13,7 +13,7 @@ type Channel struct {
 	Response  string    `gorm:"size:2000;not null;comment:出参" json:"response"`
 	Workdate  string    `gorm:"size:10;not null;comment:调用日期" json:"workdate"`
 	Worktime  string    `gorm:"size:8;not null;comment:调用时间" json:"worktime"`
-	CreatedAt time.Time //`gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt time.Time //`gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	DeletedAt time.Time //`gorm:"default:NULL" json:"deleted_at"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt time.Time `gorm:"default:NULL" json:"deleted_at"`
 }
