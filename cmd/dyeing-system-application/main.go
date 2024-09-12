@@ -22,13 +22,26 @@ func main() {
 	dye := controller.NewDyeService(services.Dye, services.Channel)
 	customer := controller.NewCustomerService(services.Customer, services.Channel)
 	r := gin.Default()
-	r.POST("/userLogin", user.UserLogin)
-	r.POST("/queryDyeList", dye.QueryDyeList)
-	r.POST("/updateDyeDetail", dye.UpdateDyeDetail)
-	r.POST("/addDyeDetail", dye.AddDyeDetail)
-	r.POST("/queryCustomerList", customer.QueryCustomerList)
-	r.POST("/updateCustomerDetail", customer.UpdateCustomerDetail)
-	r.POST("/addCustomerDetail", customer.AddCustomerDetail)
+	userService := r.Group("/user")
+	{
+		userService.POST("/userLogin", user.UserLogin)
+		userService.POST("/updateUserDetail", user.UpdateUserDetail)
+		userService.POST("/addUserDetail", user.AddUserDetail)
+	}
+	dyeService := r.Group("/dye")
+	{
+		dyeService.POST("/queryDyeList", dye.QueryDyeList)
+		dyeService.POST("/updateDyeDetail", dye.UpdateDyeDetail)
+		dyeService.POST("/addDyeDetail", dye.AddDyeDetail)
+	}
+
+	customerService := r.Group("/customer")
+	{
+		customerService.POST("/queryCustomerList", customer.QueryCustomerList)
+		customerService.POST("/updateCustomerDetail", customer.UpdateCustomerDetail)
+		customerService.POST("/addCustomerDetail", customer.AddCustomerDetail)
+	}
+
 	r.Run(":8080")
 }
 

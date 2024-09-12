@@ -67,3 +67,97 @@ func (s *UserService) UserLogin(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, common.CreateSuccessResponse(user))
 }
+
+func (s *UserService) UpdateUserDetail(c *gin.Context) {
+	//初始化日志对象
+	log := util.NewSugarLogZap()
+	//初始化入参
+	userDTO := model.GetUserDTO(c, log)
+	//生成唯一ID
+	userDTO.Channel.SerialNum = uuid.New().String()
+	//将入参转为JSON
+	tmperr := util.RequestSugarPrintInfo(log, &userDTO.Channel, userDTO)
+	if tmperr != nil {
+		util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		return
+	}
+	//登记请求信息到channel
+	channelCount, err := s.iChannelRepo.AddChannel(&userDTO.Channel)
+	if err != nil || channelCount != 1 {
+		util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateFailResponse(util.InsertFailed, "插入请求到channel失败", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.InsertFailed, "插入请求到channel失败", err.Error()))
+		return
+	}
+	//更新客户信息明细
+	count, err := s.iUserRepo.UpdateUser(&userDTO.User)
+	if err != nil || count != 1 {
+		util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateFailResponse(util.RecordNotFound, "更新用户信息明细异常", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, "更新用户信息明细异常", err.Error()))
+		return
+	}
+
+	// outputUser := []entity.User{}
+	//将出参转为JSON
+	tmperr = util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateSuccessResponse(userDTO.User))
+	if tmperr != nil {
+		util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		return
+	}
+	//更新返回信息到channel
+	returnCount, err := s.iChannelRepo.UpdateChannel(&userDTO.Channel)
+	if err != nil || returnCount != 1 {
+		util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateFailResponse(util.UpdateFailed, "更新返回到channel失败", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.UpdateFailed, "更新返回到channel失败", err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, common.CreateSuccessResponse(userDTO.User))
+}
+
+func (s *UserService) AddUserDetail(c *gin.Context) {
+	//初始化日志对象
+	log := util.NewSugarLogZap()
+	//初始化入参
+	userDTO := model.GetUserDTO(c, log)
+	//生成唯一ID
+	userDTO.Channel.SerialNum = uuid.New().String()
+	//将入参转为JSON
+	tmperr := util.RequestSugarPrintInfo(log, &userDTO.Channel, userDTO)
+	if tmperr != nil {
+		util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		return
+	}
+	//登记请求信息到channel
+	channelCount, err := s.iChannelRepo.AddChannel(&userDTO.Channel)
+	if err != nil || channelCount != 1 {
+		util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateFailResponse(util.InsertFailed, "插入请求到channel失败", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.InsertFailed, "插入请求到channel失败", err.Error()))
+		return
+	}
+	//新增客户信息明细
+	count, err := s.iUserRepo.AddUser(&userDTO.User)
+	if err != nil || count != 1 {
+		util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateFailResponse(util.RecordNotFound, "新增用户信息明细异常", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, "新增用户信息明细异常", err.Error()))
+		return
+	}
+
+	// outputUser := []entity.User{}
+	//将出参转为JSON
+	tmperr = util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateSuccessResponse(userDTO.User))
+	if tmperr != nil {
+		util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.RecordNotFound, tmperr.Error(), tmperr.Error()))
+		return
+	}
+	//更新返回信息到channel
+	returnCount, err := s.iChannelRepo.UpdateChannel(&userDTO.Channel)
+	if err != nil || returnCount != 1 {
+		util.ResponseSugarPrintInfo(log, &userDTO.Channel, common.CreateFailResponse(util.UpdateFailed, "更新返回到channel失败", err.Error()))
+		c.JSON(http.StatusOK, common.CreateFailResponse(util.UpdateFailed, "更新返回到channel失败", err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, common.CreateSuccessResponse(userDTO.User))
+}

@@ -20,8 +20,9 @@ func NewUserRepo(db *gorm.DB) *UserRepo {
 }
 
 // AddUser implements domain.IUserRepository.
-func (*UserRepo) AddUser(reqUser *entity.User) (int64, error) {
-	panic("unimplemented")
+func (r *UserRepo) AddUser(reqUser *entity.User) (int64, error) {
+	result := r.db.Create(reqUser)
+	return result.RowsAffected, result.Error
 }
 
 // DeleteUser implements domain.IUserRepository.
@@ -42,6 +43,7 @@ func (r *UserRepo) QueryUser(reqUser *entity.User) (*entity.User, error) {
 }
 
 // UpdateUser implements domain.IUserRepository.
-func (*UserRepo) UpdateUser(user *entity.User) (int64, error) {
-	panic("unimplemented")
+func (r *UserRepo) UpdateUser(reqUser *entity.User) (int64, error) {
+	result := r.db.Model(&reqUser).Where("Name = ?", reqUser.Name).Updates(map[string]interface{}{"Password": reqUser.Password, "Avatar": reqUser.Avatar, "address": reqUser.Address, "phone": reqUser.Phone, "email": reqUser.Email})
+	return result.RowsAffected, result.Error
 }

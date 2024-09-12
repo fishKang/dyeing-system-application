@@ -9,9 +9,9 @@ type Customer struct {
 	Phone      string    `gorm:"size:15;not null;comment:手机号" json:"phone"`
 	Email      string    `gorm:"size:30;comment:邮箱地址" json:"email"`
 	Address    string    `gorm:"size:100;not null;comment:联系住址" json:"address"`
-	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	DeletedAt  time.Time `gorm:"default:NULL" json:"deleted_at"`
-	Status     int16     `gorm:"not null;comment:状态 1-正常，2-注销" json:"status"`
+	Status     int16     `gorm:"default:1;comment:状态 1-正常，2-注销" json:"status"`
 	Bak        string    `gorm:"size:100;comment:备注" json:"bak"`
+	CreatedAt  time.Time `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt  time.Time `gorm:"column:updated_at" json:"updated_at"`
+	DeletedAt  time.Time `gorm:"default:NULL" json:"deleted_at"`
 }
